@@ -1,5 +1,33 @@
 # goit-telecom-project-group-1
 
+project/
+│
+├── data/
+│   ├── internet_service_churn_updated.csv       # набір даних
+│   └── internet_service_churn.csv
+│
+├── notebooks/
+│   ├── EDA.ipynb               # ноутбук для EDA
+│   ├── Preprocessing.ipynb     # ноутбук для попередньої обробки даних
+│   └── ...
+│
+├── src/
+│   ├── data_preparation.py     # скрипт для обробки даних
+│   ├── model_training.py       # скрипт для тренування моделі
+│   ├── model_evaluation.py     # скрипт для оцінки моделі
+│   └── ...
+│
+├── models/
+│   ├── trained_model.pkl       # збережена модель
+│   └── ...
+│
+├── Dockerfile                  # Dockerfile для створення образу
+├── docker-compose.yml          # файл для Docker Compose
+├── requirements.txt            # файли залежностей Python
+└── README.md                   # документація проекту
+
+
+
 версия Python 3.12.1
 
 Відкрийте термінал або командний рядок і виконайте наступну команду для створення віртуального середовища. У цьому прикладі ми назвемо наше середовище venv:
