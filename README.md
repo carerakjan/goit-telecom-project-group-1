@@ -1,5 +1,6 @@
 # goit-telecom-project-group-1
 
+```commandline
 project/
 │
 ├── data/
@@ -25,29 +26,28 @@ project/
 ├── docker-compose.yml          # файл для Docker Compose
 ├── requirements.txt            # файли залежностей Python
 └── README.md                   # документація проекту
+```
 
+## Версія Python 3.12.1
 
+Відкрийте термінал або командний рядок і виконайте наступну команду для створення віртуального середовища. У цьому прикладі ми назвемо наше середовище `venv`:
 
-версия Python 3.12.1
+команда `python -m venv .venv`
 
-Відкрийте термінал або командний рядок і виконайте наступну команду для створення віртуального середовища. У цьому прикладі ми назвемо наше середовище venv:
-
-команда python -m venv .venv
-
-приклад 
-PS E:\work\repoGIt\goit-telecom-project-group-1> python -m venv .venv
+Наприклад 
+`PS E:\work\repoGIt\goit-telecom-project-group-1> python -m venv .venv`
 
 Активуйте віртуальне середовище:
-.venv\Scripts\activate
+`.venv\Scripts\activate`
 
-приклад 
-PS E:\work\repoGIt\goit-telecom-project-group-1> .venv\Scripts\activate
+Наприклад: 
+`PS E:\work\repoGIt\goit-telecom-project-group-1> .venv\Scripts\activate`
 
-Встановіть залежності з requirements.txt:
-pip install -r requirements.txt
+Встановіть залежності з `requirements.txt`:
+`pip install -r requirements.txt`
 
-приклад 
-(.venv) PS E:\work\repoGIt\goit-telecom-project-group-1> pip install -r requirements.txt
+Наприклад:
+`(.venv) PS E:\work\repoGIt\goit-telecom-project-group-1> pip install -r requirements.txt`
 
 
 
