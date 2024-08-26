@@ -1,4 +1,4 @@
-# goit-telecom-project-group-1
+# Структура проекту
 
 ```commandline
 project/
