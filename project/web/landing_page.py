@@ -31,7 +31,7 @@ def landing_page():
   global start_button
   start_button = in_col2_1.button('Почати аналіз! 🚀', on_click=toggle_layout)                # start button
 
-  img = Image.open('project/src/app/images/logo.png')
+  img = Image.open('project/web/resources/images/logo.png')
 
   with col2:
     in_col1_2, in_col2_2, in_col3_2 = st.columns([1, 2, 1], vertical_alignment='center')  # page layout
@@ -46,7 +46,7 @@ def landing_page():
 
   @st.dialog("Instruction")          # instruction dialog window
   def inst():
-    with open('project/src/app/docs/Instructions_for_the_User.txt', 'r', encoding='utf-8') as file:
+    with open('project/web/resources/docs/Instructions_for_the_User.txt', 'r', encoding='utf-8') as file:
       instructions = file.read()
       st.write(instructions)
       

@@ -1,7 +1,7 @@
 import streamlit as st
 
-from app.landing_page import landing_page
-from app.base import base
+from web.landing_page import landing_page
+from web.side_panel import base
 
 def session():
     if 'hide_layout' not in st.session_state:
@@ -11,4 +11,3 @@ def session():
         landing_page()
     else:
         base()
-
