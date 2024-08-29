@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from system import setData
+#from plots import setData
 
 # Функція для перевірки наявності необхідних колонок
 def check_columns(data, required_columns):
@@ -18,6 +18,7 @@ def load_data(file):
         return None
 
 def render_multi_tab():
+    print('111')
     st.header('Передбачення для списку юзерів')
 
     uploaded_file = st.file_uploader("Завантажте файл зі списком користувачів для прогнозування формат csv", type=['csv'])
@@ -49,26 +50,23 @@ def render_multi_tab():
                     'download_over_limit'
                 ]
 
-                try:
-                    # Виберемо лише потрібні колонки з DataFrame
-                    data = data[required_columns]
-                    # Записати data у файл, використовуючи col1.write() (якщо це потрібно)
-                    col1.write(data)
-                except KeyError as e:
-                    # Обробка помилки, якщо названа колонка не існує
-                    missing_column = str(e).strip("'[]")
-                    st.error(f"Колонка '{missing_column}' відсутня в DataFrame.")
 
+                col1.write(data)
+
+                
                 missing_columns = [col for col in required_columns if col not in data.columns]
 
                 if col2.button('Перевірити формат'):
                     if not missing_columns:
                         st.write("Формат файлу відповідає заданим вимогам. Усі необхідні колонки присутні.")
                     else:
-                        st.write(f"Формат файлу не відповідає вимогам. Не вистачає колонок: {', '.join(missing_columns)}")
+                        missing_columns_str = ', '.join(missing_columns)
+                        error_message = f"Формат файлу не відповідає вимогам. Не вистачає колонок: {missing_columns_str}"
+                        st.markdown(f'<p style="color:red">{error_message}</p>', unsafe_allow_html=True)
 
                 if col2.button('Зробити передбачення'):
-                    setData(data)
+                    print('1111')
+                   # setData(data)
                     
             else:
                 st.warning("Не вдалося знайти жодну з необхідних колонок ('id' або 'last_name') в DataFrame.")
