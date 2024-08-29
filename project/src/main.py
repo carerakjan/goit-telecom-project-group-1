@@ -1,10 +1,10 @@
 import streamlit as st
 
-from app.base import base
+from app.session_state import session
 
 
 def main():
-    base()
+    session()
         
 
 if __name__ == '__main__':
