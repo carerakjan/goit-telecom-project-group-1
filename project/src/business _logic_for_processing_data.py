@@ -4,21 +4,20 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
+import joblib
 
-df = pd.read_csv('project/data/internet_service_churn_updated.csv')
+df = pd.read_csv('project/data/internet_service_churn.csv')
 target = 'churn' 
 features = df.columns.drop(target)
-
 
 # Модель
 X = df[features]
 y = df[target]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-model = DecisionTreeClassifier(random_state=42)
-model.fit(X_train, y_train)
+model_path = 'project/models/decision_tree.pkl'
+model = joblib.load(model_path)
 predictions = model.predict(X_test)
-
 accuracy = accuracy_score(y_test, predictions)
 print(f"Точність моделі: {accuracy:.2f}")
 
