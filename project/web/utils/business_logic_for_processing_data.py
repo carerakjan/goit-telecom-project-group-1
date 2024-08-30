@@ -93,3 +93,54 @@ def filter_columns(data):
     filtered_data = data[existing_columns]
     
     return filtered_data
+
+
+def predict_single_user(data):
+        # Завантаження моделі
+    model_path = 'project/models/decision_tree.pkl'
+    with open(model_path, 'rb') as file:
+        model = pickle.load(file)
+    try:
+        # Припустимо, що модель та dataFile вже завантажені
+
+        feature_names = dataFile.columns.tolist()
+        feature_names = [col for col in feature_names if col != 'churn']
+        
+        # Створення DataFrame з вхідних даних
+        input_data = pd.DataFrame([data])
+        
+        # Перевірка наявності всіх колонок
+        missing_cols = [col for col in feature_names if col not in input_data.columns]
+        if missing_cols:
+            raise ValueError(f"Відсутні колонки: {', '.join(missing_cols)}")
+        
+        # Додавання відсутніх колонок з значеннями за замовчуванням
+        for col in feature_names:
+            if col not in input_data.columns:
+                input_data[col] = 0
+        
+        # Перестановка колонок
+        input_data = input_data[feature_names]
+        
+        # Отримання ймовірностей
+        predictions = model.predict_proba(input_data)[:, 1]
+        # Виведення ймовірностей
+        print(f"Ймовірності прогнозування: {predictions}")
+        
+        # Встановлення ймовірності відтоку та категорії
+        input_data['churn_probability'] = predictions
+        input_data['churn_category'] = ['висока' if p > 0.5 else 'низька' for p in predictions]
+        
+        return filter_columns(input_data)
+    
+    except Exception as e:
+        print(f"Сталася помилка: {e}")
+        return pd.DataFrame()
+    
+   
+       
+           
+       
+   
+
+
