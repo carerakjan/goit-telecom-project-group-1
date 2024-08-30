@@ -4,12 +4,14 @@ from web.utils.business_logic_for_processing_data import predict_single_user
 def render_single_tab():
     st.header('Одиночне прогнозування')
 
-    # Перевіряємо, чи є змінна в стані сесії, якщо ні - ініціалізуємо її
+    # Ініціалізація збережених результатів у session_state
     if 'user_count' not in st.session_state:
         st.session_state.user_count = 1
+    if 'predictions' not in st.session_state:
+        st.session_state.predictions = []
 
     with st.form(key=f'single_prediction_form_{st.session_state.user_count}'):
-        # Поля введення даних
+        # Введення даних користувача
         is_tv_subscriber = st.selectbox('Чи є підписником телевізійного пакету?', ['Так', 'Ні'])
         is_movie_package_subscriber = st.selectbox('Чи є підписником пакету фільмів?', ['Так', 'Ні'])
         subscription_age = st.number_input('Вік підписки (в місяцях)', min_value=0, value=0)
@@ -18,10 +20,10 @@ def render_single_tab():
         upload_avg = st.number_input('Середня швидкість відвантаження (Мб/с)', value=0.0)
         download_over_limit = st.number_input('Перевищення ліміту завантаження (Гб)', value=0.0)
 
-        # Кнопка відправки даних
+        # Кнопка для прогнозування
         submit_button = st.form_submit_button(label='Прогнозувати')
 
-    # Обробка форми
+    # Обробка результату
     if submit_button:
         data = {
             'is_tv_subscriber': 1 if is_tv_subscriber == 'Так' else 0,
@@ -35,13 +37,18 @@ def render_single_tab():
 
         predicted_data = predict_single_user(data)
 
-        st.subheader('Результати прогнозування:')
-        st.dataframe(predicted_data, hide_index=True)
+        # Збереження результату у session_state
+        st.session_state.predictions.append(predicted_data)
 
-        # Запитуємо у користувача, чи хоче він додати іншого користувача
-        another_user = st.button('Додати іншого користувача')
+        # Збільшення лічильника користувачів
+        st.session_state.user_count += 1
 
-        if another_user:
-            # Збільшуємо лічильник для унікального ключа форми
-            st.session_state.user_count += 1
-            st.experimental_rerun()
+        # Відображення результатів
+        st.success("Прогноз додано. Ви можете додати ще одного користувача.")
+
+    # Відображення результатів всіх попередніх користувачів
+    if st.session_state.predictions:
+        st.subheader('Всі результати прогнозування:')
+        for i, prediction in enumerate(st.session_state.predictions, start=1):
+            st.write(f"Результати для користувача {i}:")
+            st.dataframe(prediction, hide_index=True)
