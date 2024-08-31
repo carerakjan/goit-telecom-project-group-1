@@ -5,6 +5,7 @@ import streamlit as st  # Для відображення графіків у St
 import shap  # Для пояснення моделей за допомогою SHAP
 import os
 from sklearn.utils import shuffle
+from web.utils.get_main_features import get_feature_titles
 
 
 def plot_feature_importance(importances, feature_names, title):
@@ -19,7 +20,9 @@ def plot_feature_importance(importances, feature_names, title):
 
     plt.figure(figsize=(10, 6))
     plt.barh(
-        np.array(feature_names)[sorted_idx], importances[sorted_idx], color="skyblue"
+        np.array(get_feature_titles(feature_names))[sorted_idx],
+        importances[sorted_idx],
+        color="skyblue",
     )
     plt.xlabel("Важливість")
     plt.ylabel("Особливості")
