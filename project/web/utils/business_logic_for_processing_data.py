@@ -3,6 +3,7 @@ import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
 import numpy as np
+from web.utils.function_for_processing import processing_input_data
 
 # Завантаження моделі
 model_path = 'project/models/decision_tree.pkl'
@@ -96,34 +97,25 @@ def filter_columns(data):
 
 
 def predict_single_user(data):
-        # Завантаження моделі
+    # Завантаження моделі
     model_path = 'project/models/decision_tree.pkl'
     with open(model_path, 'rb') as file:
         model = pickle.load(file)
+        
     try:
-        # Припустимо, що модель та dataFile вже завантажені
-
-        feature_names = dataFile.columns.tolist()
-        feature_names = [col for col in feature_names if col != 'churn']
+        # Обробка вхідних даних і забезпечення правильного порядку стовпців
+        input_data = processing_input_data(data)
         
-        # Створення DataFrame з вхідних даних
-        input_data = pd.DataFrame([data])
+        # Вказаний порядок ознак, який очікується моделлю
+        model_feature_order = ['is_tv_subscriber', 'is_movie_package_subscriber', 'subscription_age',
+                               'reamining_contract', 'download_avg', 'upload_avg', 'download_over_limit']
         
-        # Перевірка наявності всіх колонок
-        missing_cols = [col for col in feature_names if col not in input_data.columns]
-        if missing_cols:
-            raise ValueError(f"Відсутні колонки: {', '.join(missing_cols)}")
+        # Переконайтеся, що input_data має той самий порядок стовпців, що і model_feature_order
+        input_data = input_data[model_feature_order]
         
-        # Додавання відсутніх колонок з значеннями за замовчуванням
-        for col in feature_names:
-            if col not in input_data.columns:
-                input_data[col] = 0
-        
-        # Перестановка колонок
-        input_data = input_data[feature_names]
-        
-        # Отримання ймовірностей
+        # Прогнозування ймовірностей
         predictions = model.predict_proba(input_data)[:, 1]
+        
         # Виведення ймовірностей
         print(f"Ймовірності прогнозування: {predictions}")
         
@@ -136,7 +128,6 @@ def predict_single_user(data):
     except Exception as e:
         print(f"Сталася помилка: {e}")
         return pd.DataFrame()
-    
    
        
            
