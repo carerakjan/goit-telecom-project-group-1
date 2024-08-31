@@ -24,7 +24,7 @@ def processing_data(file_csv):
 # processed_df = processing_data('project/data/internet_service_churn.csv')
 
 def processing_input_data(input_data):
-    # Создаем DataFrame
+    # Створюємо DataFrame
     df = pd.DataFrame([input_data])
     print("Original DataFrame:")
     print(df)
@@ -33,8 +33,6 @@ def processing_input_data(input_data):
         scaler = pickle.load(file)
 
     numerical_features = ["is_tv_subscriber","is_movie_package_subscriber","subscription_age","reamining_contract","download_avg","upload_avg","download_over_limit"]
-
-
 
     df[numerical_features] = scaler.transform(df[numerical_features])
     print(df.head())

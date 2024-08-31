@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from web.utils.business_logic_for_processing_data import make_predictions, display_feature_importance, visualize_churn_categories
+from web.utils.business_logic_for_processing_data import make_predictions,  visualize_churn_categories
 
 def render_multi_tab():
     st.header('Передбачення для списку юзерів')
@@ -18,10 +18,7 @@ def render_multi_tab():
                 
     # Розміщення кнопок у верхній частині сторінки
     col1, col2 = st.columns([1, 2])  # Задайте співвідношення ширини колонок
-
-    with col2:
-        if st.button('Переглянути важливість ознак'):
-           display_feature_importance()
+  
     with col1:
         if st.button('Зробити передбачення'):
             predicted_data, missing_columns = make_predictions(data)

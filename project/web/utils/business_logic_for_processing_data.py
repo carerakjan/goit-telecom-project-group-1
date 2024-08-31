@@ -1,38 +1,33 @@
-import streamlit as st
-import pandas as pd
 import pickle
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+import streamlit as st
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.inspection import permutation_importance
+import shap
+import lime.lime_tabular
+import pickle
+
+import lime.lime_tabular  # Для LIME
+import pandas as pd
+import joblib  # Для збереження та завантаження моделі
+import os
 from web.utils.function_for_processing import processing_input_data
+
+ 
 
 # Завантаження моделі
 model_path = 'project/models/decision_tree.pkl'
 with open(model_path, 'rb') as file:
     model = pickle.load(file)
 
-# Завантаження даних для отримання імен ознак
-data_path = 'project/data/internet_service_churn_scaled.csv'
-dataFile = pd.read_csv(data_path)
-
-def plot_feature_importance(feature_names, importances):
-    sorted_idx = np.argsort(importances)
-    
-    plt.figure(figsize=(6, 4))
-    plt.barh(np.array(feature_names)[sorted_idx], importances[sorted_idx])
-    plt.xlabel("Важливість ознак")
-    plt.ylabel("Ознаки")
-    plt.title("Важливість ознак в Decision Tree")
-    
-    # Відображення графіка безпосередньо у веб-додатку
-    st.pyplot(plt)
-
-def display_feature_importance():
-    if hasattr(model, 'feature_importances_'):
-        feature_names = dataFile.columns.tolist()  # Отримання імен ознак з даних
-        importances = model.feature_importances_
-        plot_feature_importance(feature_names, importances)
-    else:
-        st.error("Модель не підтримує оцінку важливості ознак.")
 
 def visualize_churn_categories(data):
     churn_counts = data['churn_category'].value_counts()
