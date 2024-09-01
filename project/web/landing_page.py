@@ -47,7 +47,7 @@ def landing_page():
 
   @st.dialog("Instruction")          # instruction dialog window
   def inst():
-    with open('project/web/resources/docs/Instructions_for_the_User.txt', 'r', encoding='utf-8') as file:
+    with open('project/web/resources/docs/instructions_for_the_User.txt', 'r', encoding='utf-8') as file:
       instructions = file.read()
       st.write(instructions)
       
