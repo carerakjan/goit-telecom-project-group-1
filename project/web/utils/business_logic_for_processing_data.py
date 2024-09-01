@@ -6,13 +6,11 @@ import os  # Для роботи з файловою системою
 import pandas as pd  # Для роботи з даними у форматі DataFrame
 from web.utils.function_for_processing import processing_input_data
 from web.utils.scale_data import scale
+from web.utils.load_model import get_model
 
 
 # Завантаження моделі
-@st.cache_data
-def get_model(model_path="project/models/decision_tree.pkl"):
-    with open(model_path, "rb") as file:
-        return pickle.load(file)
+model = get_model("decision_tree.pkl")
 
 
 def visualize_churn_categories(data):
@@ -54,16 +52,18 @@ def make_predictions(data):
         else:
             return None, ["Не вдається визначити ідентифікаторний стовпець."]
 
-        data = data[id_column]
+        output = pd.DataFrame(data[id_column])
 
         # Виконання передбачень
-        predictions = get_model().predict_proba(scale(data))[:, 1]
+        predictions = model.predict_proba(scale(data))[:, 1]
 
         # Додавання результатів передбачень до вихідних даних
-        data["churn_probability"] = predictions
-        data["churn_category"] = probability_to_text(predictions)
+        output["churn_category"] = probability_to_text(predictions)
+        output["churn_probability"] = predictions
 
-        return data, None
+        print(">>", output)
+
+        return output, None
     except Exception as e:
         return None, [str(e)]
 
@@ -76,15 +76,15 @@ def func(pct, allvals):
 def predict_single_user(data):
     try:
         # Прогнозування ймовірностей
-        predictions = get_model().predict_proba(processing_input_data(data))[:, 1]
-        data = data["id"]
+        predictions = model.predict_proba(processing_input_data(data))[:, 1]
+        data = pd.DataFrame()
 
         # Виведення ймовірностей
         print(f"Ймовірності прогнозування: {predictions}")
 
         # Встановлення ймовірності відтоку та категорії
-        data["churn_probability"] = predictions
         data["churn_category"] = probability_to_text(predictions)
+        data["churn_probability"] = predictions
 
         return data
     except Exception as e:
