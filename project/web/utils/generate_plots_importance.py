@@ -25,68 +25,7 @@ def get_metrics_by_model(model_name: str):
     return precision, thresholds, current_threshold
 
 
-def plot_bagel_chart(model_name, current_threshold=1.0):
-    """
-    Побудова графіка у вигляді кільця (bagel chart) для точності моделі.
-
-    :param model_name: Назва моделі.
-    :param current_threshold: Поточний поріг для визначення точності.
-    """
-    precision, recall, thresholds = get_metrics_by_model(
-        model_name=model_name
-    )  # Отримання метрик
-    fig, ax = plt.subplots(figsize=(6, 6))  # Створення фігури та осі для графіка
-    prec = precision[1]  # Точність для даного порогу
-
-    # Налаштування кольорів та радіусів
-    wedge_colors = [
-        "#00aaff" if prec > 0.9 else "#ff6347",  # Колір для заповненого сегмента
-        "#e0e0e0",  # Колір для незаповненого сегмента
-    ]
-    radius = 0.4  # Радіус кільця
-
-    # Знаходження відповідного значення точності для поточного порога
-    idx = np.searchsorted(thresholds, current_threshold, side="right") - 1
-    if idx < 0:
-        idx = 0  # Захист від виходу за межі масиву
-    precision_value = precision[idx]  # Точність для знайденого порогу
-
-    # Сегменти для графіка
-    filled_segment = precision_value * 100  # Заповнений сегмент
-    remaining_segment = 100 - filled_segment  # Незаповнений сегмент
-
-    # Побудова графіка у вигляді кільця
-    wedges = [filled_segment, remaining_segment]
-
-    plt.pie(
-        wedges,
-        colors=wedge_colors,
-        startangle=90,
-        counterclock=False,
-        wedgeprops=dict(width=radius),  # Налаштування ширини кільця
-    )
-
-    # Налаштування тексту з поточним значенням точності
-    plt.text(
-        0,
-        0,
-        f"{precision_value:.2f}",  # Виведення точності у вигляді тексту
-        ha="center",
-        va="center",
-        fontsize=20,
-        color="#000000",
-    )
-
-    # Установлення однакових пропорцій для осей
-    ax.set_aspect("equal")
-
-    # Прибираємо осі
-    plt.axis("off")
-
-    # Відображення графіка у Streamlit
-    st.pyplot(fig)
-
-
+@st.cache_data
 def models_bar_plot(model_name):
     """
     Побудова стовпчикового графіка для точностей моделей з виділенням конкретної моделі.
@@ -94,6 +33,7 @@ def models_bar_plot(model_name):
     :param model_name: Назва моделі для виділення.
     """
     data = load_metrics()  # Завантаження метрик
+    precision, recall, _ = get_metrics_by_model(model_name)
 
     # Виділяємо одну з моделей
     highlight_model = model_name.split(".")[0]
@@ -117,7 +57,9 @@ def models_bar_plot(model_name):
     # Додаємо підписи і заголовки
     plt.xlabel("Модель")
     plt.ylabel("Точність")
-    plt.title("Дана модель серед інших")
+    plt.title(
+        f"Дана модель серед інших - точнсть: {precision[1]:.2f} при повноті: {recall[1]:.2f}"
+    )
 
     # Повертаємо розмітку
     plt.xticks(rotation=45, ha="right")
@@ -128,29 +70,7 @@ def models_bar_plot(model_name):
     st.pyplot(plt)
 
 
-def plot_bagel_wrapper(model_name):
-    """
-    Обгортка для побудови графіка з метриками та графіка у вигляді кільця.
-
-    :param model_name: Назва моделі.
-    """
-    # Створення двох колонок для розміщення елементів
-    col1, col2 = st.columns(2)
-
-    # Заповнення колонок
-    with col1:
-        st.header(f"Метрики моделі: {model_name}")  # Заголовок для колонок
-        precision, thresholds, _ = get_metrics_by_model(model_name)  # Отримання метрик
-        st.markdown(
-            f"<p style='font-size: 1.5rem'>Модель показала точність:<br/>{precision[1]:.2f} при повноті: {thresholds[1]:.2f}</p>",
-            unsafe_allow_html=True,  # Відображення тексту у HTML форматі
-        )
-        models_bar_plot(model_name)  # Побудова графіка з точностями інших моделей
-
-    with col2:
-        plot_bagel_chart(model_name)  # Побудова графіка у вигляді кільця
-
-
+@st.cache_data
 def plot_feature_importance(importances, feature_names, title):
     """
     Побудова графіка важливості ознак.
@@ -198,7 +118,7 @@ def plot_logistic_regression_importance(model_name, X, feature_names):
     plot_feature_importance(
         importances, feature_names, "Важливість особливостей - Логістична регресія"
     )
-    plot_bagel_wrapper(model_name)  # Побудова графіка у вигляді кільця
+    models_bar_plot(model_name)  # Побудова графіка у вигляді кільця
 
 
 def plot_decision_tree_importance(model_name, X, feature_names):
@@ -219,7 +139,7 @@ def plot_decision_tree_importance(model_name, X, feature_names):
     plot_feature_importance(
         importances, feature_names, "Важливість особливостей - Дерево рішень"
     )
-    plot_bagel_wrapper(model_name)  # Побудова графіка у вигляді кільця
+    models_bar_plot(model_name)  # Побудова графіка у вигляді кільця
 
 
 def plot_svm_linear_importance(model_name, X, feature_names):
@@ -240,7 +160,7 @@ def plot_svm_linear_importance(model_name, X, feature_names):
     plot_feature_importance(
         importances, feature_names, "Важливість особливостей - Лінійний SVM"
     )
-    plot_bagel_wrapper(model_name)  # Побудова графіка у вигляді кільця
+    models_bar_plot(model_name)  # Побудова графіка у вигляді кільця
 
 
 def plot_svm_poly_importance(model_name, X, feature_names):
@@ -273,7 +193,7 @@ def plot_svm_poly_importance(model_name, X, feature_names):
     plot_feature_importance(
         importances, feature_names, "Важливість особливостей - Поліноміальний SVM"
     )
-    plot_bagel_wrapper(model_name)  # Побудова графіка у вигляді кільця
+    models_bar_plot(model_name)  # Побудова графіка у вигляді кільця
 
 
 def plot_svm_rbf_importance(model_name, X, feature_names):
@@ -307,7 +227,7 @@ def plot_svm_rbf_importance(model_name, X, feature_names):
     plot_feature_importance(
         importances, feature_names, "Важливість особливостей - RBF SVM"
     )
-    plot_bagel_wrapper(model_name)  # Побудова графіка у вигляді кільця
+    models_bar_plot(model_name)  # Побудова графіка у вигляді кільця
 
 
 def plot_mlp_importance(model_name, X, feature_names):
@@ -336,7 +256,7 @@ def plot_mlp_importance(model_name, X, feature_names):
         return
 
     # Поки що немає реалізації для MLP
-    plot_bagel_wrapper(model_name)  # Побудова графіка у вигляді кільця
+    models_bar_plot(model_name)  # Побудова графіка у вигляді кільця
 
 
 def plot_svm_sigmoid_importance(model_name, X, feature_names):
@@ -370,7 +290,7 @@ def plot_svm_sigmoid_importance(model_name, X, feature_names):
     plot_feature_importance(
         importances, feature_names, "Важливість особливостей - SVM Sigmoid"
     )
-    plot_bagel_wrapper(model_name)  # Побудова графіка у вигляді кільця
+    models_bar_plot(model_name)  # Побудова графіка у вигляді кільця
 
 
 def select_plot(model_name, X, feature_names):
