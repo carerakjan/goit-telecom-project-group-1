@@ -14,9 +14,12 @@ def example():
     st.header("Перевірте відповідність колонок та даних для свого файлу")
     st.write(showcsv)
 
+def toggle_layout_home():
+    st.session_state.hide_layout = not st.session_state.hide_layout
+
 def base():
     # Кнопка "Повернутися на головну"
-    if st.sidebar.button("Повернутися на головну 🏠"):
+    if st.sidebar.button("Повернутися на головну 🏠", on_click=toggle_layout_home):
         pass
     # Кнопка "Повернутися на головну"
     if st.sidebar.button("Інструкція користування 📄"):
