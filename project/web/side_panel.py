@@ -6,6 +6,8 @@ from web.utils.generate_plots_importance import select_plot,plot_feature_importa
 import streamlit.components.v1 as components
 
 
+
+
 def base():
  
 
@@ -38,6 +40,9 @@ def base():
     if 'tab' not in st.session_state:
         st.session_state.tab = "Одиночне прогнозування"
 
+    if 'selected_model' not in st.session_state:
+        st.session_state.selected_model = "decision_tree.pkl"
+
     # Вкладки
     tabs = st.sidebar.radio("Оберіть тип передбачення", ("Передбачення для клієнта", "Передбачення для клієнтів"))
     
@@ -46,21 +51,22 @@ def base():
     if st.sidebar.button("Оновити"):
         st.session_state.tab = tabs
 
-    selectModel = st.sidebar.selectbox("Оберіть модель для  використання ", ("logistic_regression_model.pkl",
+    select_model = st.sidebar.selectbox("Оберіть модель для  використання ", (
                                                                 "decision_tree.pkl", 
+                                                                "logistic_regression_model.pkl",
                                                                 "svm_model_linear.pkl",
                                                                 "svm_model_poly.pkl", 
                                                                 "svm_model_rbf.pkl", 
                                                                 "neural_model_MLP.pkl", 
                                                                 "svm_model_sigmoid.pkl"))
-
-       
     
+    # Обновление выбранной модели в session_state
+    st.session_state.selected_model = select_model
 
     if st.sidebar.button('Переглянути важливість ознак'):
             feature_names=["is_tv_subscriber","is_movie_package_subscriber","subscription_age","reamining_contract","download_avg","upload_avg","download_over_limit"]
             X = pd.read_csv('project/data/internet_service_churn_scaled.csv').drop(columns=['churn'], errors='ignore')
-            select_plot(selectModel,X, feature_names)
+            modal_dialog(select_model,X, feature_names)
 
     if st.sidebar.button("Показати html"):
         components.html(modal_html, height=600)
@@ -76,4 +82,9 @@ def base():
     elif tabs == "Передбачення для клієнтів":
         render_multi_tab()
 
+@st.dialog("Інформаційні данні щодо обранної моделі")          # instruction dialog window
+def modal_dialog(select_model,X, feature_names):
+    select_plot(select_model,X, feature_names)
+   
+    
 
