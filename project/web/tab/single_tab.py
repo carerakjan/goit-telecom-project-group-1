@@ -3,7 +3,7 @@ from web.utils.business_logic_for_processing_data import predict_single_user
 
 
 def render_single_tab():
-    st.header("Одиночне прогнозування")
+    # st.header("Одиночне прогнозування")
 
     # Ініціалізація збережених результатів у session_state
     if "user_count" not in st.session_state:

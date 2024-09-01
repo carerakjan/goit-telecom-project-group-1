@@ -2,11 +2,6 @@ import streamlit as st
 import os
 import joblib
 
-# Инициализация session_state
-if "selected_model" not in st.session_state:
-    st.session_state.selected_model = "decision_tree.pkl"
-
-
 @st.cache_resource
 def get_model(model_name):
     return joblib.load(os.path.join("project/models", model_name))
