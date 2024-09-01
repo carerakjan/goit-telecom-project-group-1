@@ -10,7 +10,7 @@ def get_predict(data):
     
     # Словник з відповідними методами для кожної моделі
     method_map = {
-        "decision_tree.pkl": lambda: model.зкувшсе(scale(prepare_data(data)))[:, 1],
+        "decision_tree.pkl": lambda: model.predict_proba(scale(prepare_data(data)))[:, 1],
         "logistic_regression_model.pkl": lambda: model.predict_proba(scale(prepare_data(data)))[:, 1],
         "svm_model_linear.pkl": lambda: model.decision_function(scale(data)),
         
