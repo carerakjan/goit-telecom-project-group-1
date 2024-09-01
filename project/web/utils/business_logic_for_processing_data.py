@@ -5,12 +5,11 @@ import joblib  # Для збереження та завантаження мо�
 import os  # Для роботи з файловою системою
 import pandas as pd  # Для роботи з даними у форматі DataFrame
 from web.utils.function_for_processing import processing_input_data
-from web.utils.scale_data import scale
-from web.utils.load_model import get_model
+from web.utils.scale_data import scale,prepare_data
+from web.utils.load_model import get_model, get_model_name
 
 
-# Завантаження моделі
-model = get_model("decision_tree.pkl")
+
 
 
 def visualize_churn_categories(data):
@@ -53,9 +52,14 @@ def make_predictions(data):
             return None, ["Не вдається визначити ідентифікаторний стовпець."]
 
         output = pd.DataFrame(data[id_column])
+        # Завантаження моделі
+        model = get_model(get_model_name())
 
-        # Виконання передбачень
-        predictions = model.predict_proba(scale(data))[:, 1]
+        if get_model_name()=="decision_tree.pkl":
+            # Виконання передбачень
+            predictions = model.predict_proba(scale(data))[:, 1]
+        else:
+            predictions = model.predict_proba(scale(prepare_data(data)))[:, 1]
 
         # Додавання результатів передбачень до вихідних даних
         output["churn_category"] = probability_to_text(predictions)
@@ -75,6 +79,8 @@ def func(pct, allvals):
 
 def predict_single_user(data):
     try:
+        # Завантаження моделі
+        model = get_model(get_model_name())
         # Прогнозування ймовірностей
         predictions = model.predict_proba(processing_input_data(data))[:, 1]
         data = pd.DataFrame()

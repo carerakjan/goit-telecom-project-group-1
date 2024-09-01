@@ -1,9 +1,10 @@
 import streamlit as st
 from PIL import Image
+st.set_page_config(layout='wide')  
 
 
 def landing_page():
-  st.set_page_config(layout='wide')                                  # page layout
+                                 # page layout
 
   page_bg_img = '''
   <style>
