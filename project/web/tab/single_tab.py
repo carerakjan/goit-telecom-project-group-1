@@ -22,10 +22,10 @@ def render_single_tab():
             "Чи є підписником пакету фільмів?", ["Так", "Ні"]
         )
         subscription_age = st.number_input(
-            "Вік підписки (в місяцях)", min_value=0, value=0
+            "Вік підписки (в місяцях)", min_value=0.0, value=0.0
         )
         reamining_contract = st.number_input(
-            "Залишок контракту (в місяцях)", min_value=0, value=0
+            "Залишок контракту (в місяцях)", min_value=0.0, value=0.0
         )
         download_avg = st.number_input("Середній об'єм завантаження (Гб)", value=0.0)
         upload_avg = st.number_input("Середній об'єм відвантаження (Мб/с)", value=0.0)
