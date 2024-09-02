@@ -4,7 +4,7 @@ import joblib
 
 @st.cache_resource
 def get_model(model_name):
-    return joblib.load(os.path.join("project/models", model_name))
+    return joblib.load(os.path.join("project/models/new_models", model_name))
 
 
 def get_model_name():

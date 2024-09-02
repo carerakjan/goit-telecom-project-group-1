@@ -30,7 +30,16 @@ def render_multi_tab():
             predicted_data, missing_columns = make_predictions(data)
             if predicted_data is not None:
                 st.subheader("Вірогідність відтоку:")
-                st.dataframe(predicted_data, hide_index=True)
+
+                column_translation = {
+                    'id': 'ID користувача',
+                    'churn_category': 'Категорія відтоку',
+                    'churn_probability': 'Ймовірність відтоку',
+                }
+
+                
+                translated_data = predicted_data.rename(columns=column_translation)
+                st.dataframe(translated_data, hide_index=True)
 
                 with col2:
                     st.subheader("Розподіл ймовірності відтоку:")
