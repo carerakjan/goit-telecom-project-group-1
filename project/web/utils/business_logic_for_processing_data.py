@@ -10,10 +10,6 @@ from web.utils.load_model import get_model, get_model_name
 from web.utils.predict_by_model import get_predict
 
 
-
-
-
-
 def visualize_churn_categories(data):
     churn_counts = data["churn_category"].value_counts()
 
@@ -47,9 +43,9 @@ def make_predictions(data):
     try:
         if "id" in data.columns:
             id_column = "id"
-
-        output = pd.DataFrame(data[id_column])
-
+            output = pd.DataFrame(data[id_column])
+        else:
+            output = pd.DataFrame()
         predictions = get_predict(data)
         # Додавання результатів передбачень до вихідних даних
         output["churn_category"] = probability_to_text(predictions)
@@ -66,23 +62,3 @@ def func(pct, allvals):
     absolute = int(pct / 100.0 * sum(allvals))
     return f"{absolute} з {sum(allvals)} ({pct:.1f}%)"
 
-
-def predict_single_user(data):
-    try:
-        # Завантаження моделі
-        model = get_model(get_model_name())
-        # Прогнозування ймовірностей
-        predictions = model.predict_proba(processing_input_data(data))[:, 1]
-        data = pd.DataFrame()
-
-        # Виведення ймовірностей
-        print(f"Ймовірності прогнозування: {predictions}")
-
-        # Встановлення ймовірності відтоку та категорії
-        data["churn_category"] = probability_to_text(predictions)
-        data["churn_probability"] = predictions
-
-        return data
-    except Exception as e:
-        print(f"Сталася помилка: {e}")
-        return pd.DataFrame()

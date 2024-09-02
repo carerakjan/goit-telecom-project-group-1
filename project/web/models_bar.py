@@ -5,6 +5,7 @@ import pandas as pd
 
 @st.dialog("Інформаційні данні щодо обранної моделі")  # instruction dialog window
 def modal_dialog(select_model, X, feature_names):
+    st.markdown('<style>[role="dialog"] {width:75vw}</style>', unsafe_allow_html=True)
     select_plot(select_model, X, feature_names)
 
 
