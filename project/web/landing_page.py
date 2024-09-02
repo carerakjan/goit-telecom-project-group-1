@@ -45,7 +45,7 @@ def landing_page():
   for _ in range(8):
     in_col2_2.write('')
 
-  @st.dialog("Instruction")          # instruction dialog window
+  @st.dialog("Instruction", width="large")          # instruction dialog window
   def inst():
     with open('project/web/resources/docs/instructions_for_the_User.txt', 'r', encoding='utf-8') as file:
       instructions = file.read()
