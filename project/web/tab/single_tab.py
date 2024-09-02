@@ -7,7 +7,7 @@ from web.utils.business_logic_for_processing_data import make_predictions
 def render_single_tab():
     # st.header("Одиночне прогнозування")
 
-    with st.form(key=f"single_prediction_form_{st.session_state.user_count}"):
+    with st.form(key="single_prediction_form"):
         # Введення даних користувача
         is_tv_subscriber = st.selectbox(
             "Чи є підписником телевізійного пакету?", ["Так", "Ні"]
