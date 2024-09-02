@@ -66,27 +66,28 @@ def models_bar_plot(model_name):
 def plot_feature_importance(importances, feature_names, title):
     plt.figure(figsize=(10, 6))
     
-    # Отображение горизонтального бар-графика
+    # Відображення  бар-графіка
     plt.barh(
-        np.array(feature_names),  # Список имен признаков
+        np.array(get_feature_titles(feature_names)),  # Список имен признаков
         importances,  # Важность признаков
         color="skyblue",
     )
-    
-    # Установка меток оси X и пределов
+
+    # Встановлення міток осі X 
     plt.xlabel("Важливість")
     plt.ylabel("Особливості")
+    print(feature_names)
     plt.title(title)
     plt.gca().invert_yaxis()  # Перевертання осі Y для відображення найбільш важливих ознак вгорі
 
-    # Установка пределов и меток оси X
+    # Встановлення міток осі X 
     plt.xlim(0, 1)  # Установка диапазона оси X от 0 до 2
     plt.xticks(np.arange(0, 1.1, 0.1))  # Установка меток с шагом 0.2
 
-    # Отображение графика в Streamlit
+    # Відображення графіка в Streamlit
     st.pyplot(plt)
     
-    # Очистка текущего графика, чтобы предотвратить наложение при многократных вызовах функции
+    # Очистка поточного графіка, щоб попередити накладення при множинонном виклику функціїї
     plt.clf()
 
 def plot_model_importance(model_name, file_path, X, feature_names, plot_title):
