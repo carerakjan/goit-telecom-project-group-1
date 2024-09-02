@@ -2,8 +2,7 @@ import streamlit as st
 
 
 def init_state():
-    if "hide_layout" not in st.session_state:
-        st.session_state.hide_layout = False
-
-    if "selected_model" not in st.session_state:
-        st.session_state.selected_model = "decision_tree.pkl"
+    st.session_state.setdefault("hide_layout", False)
+    st.session_state.setdefault("selected_model", "decision_tree.pkl")
+    st.session_state.setdefault("predictions", [])
+    st.session_state.setdefault("user_count", 0)

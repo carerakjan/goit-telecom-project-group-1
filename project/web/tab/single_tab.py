@@ -7,12 +7,6 @@ from web.utils.business_logic_for_processing_data import make_predictions
 def render_single_tab():
     # st.header("Одиночне прогнозування")
 
-    # Ініціалізація збережених результатів у session_state
-    if "user_count" not in st.session_state:
-        st.session_state.user_count = 1
-    if "predictions" not in st.session_state:
-        st.session_state.predictions = []
-
     with st.form(key=f"single_prediction_form_{st.session_state.user_count}"):
         # Введення даних користувача
         is_tv_subscriber = st.selectbox(
@@ -50,23 +44,18 @@ def render_single_tab():
             "download_over_limit": download_over_limit,
         }
 
-       
         # Convert user input to DataFrame
         df = pd.DataFrame([data])
         predicted_data, missing_columns = make_predictions(df)
 
         if predicted_data is not None:
             # Save result to session_state
-            if 'predictions' not in st.session_state:
-                st.session_state.predictions = []
             st.session_state.predictions.append(predicted_data)
-            if 'user_count' not in st.session_state:
-                st.session_state.user_count = 0
             st.session_state.user_count += 1
 
             # Display results
-            st.success("Прогноз додано. Ви можете додати ще одного користувача.") 
-            
+            st.success("Прогноз додано. Ви можете додати ще одного користувача.")
+
         else:
             if missing_columns:
                 missing_columns_str = ", ".join(missing_columns)

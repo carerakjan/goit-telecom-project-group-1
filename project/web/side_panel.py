@@ -19,7 +19,6 @@ def toggle_layout_home():
 
 def refresh_page():
     # Скидання показу результатів і очищення збережених прогнозів
-    st.session_state.show_results = False  # Забезпечує, що результати не відображатимуться
     st.session_state.predictions = []  # Очищення списку прогнозів
     st.session_state.user_count = 1  # Скидання лічильника користувачів
 
