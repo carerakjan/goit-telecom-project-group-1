@@ -17,6 +17,12 @@ def example():
 def toggle_layout_home():
     st.session_state.hide_layout = not st.session_state.hide_layout
 
+def refresh_page():
+    # Скидання показу результатів і очищення збережених прогнозів
+    st.session_state.show_results = False  # Забезпечує, що результати не відображатимуться
+    st.session_state.predictions = []  # Очищення списку прогнозів
+    st.session_state.user_count = 1  # Скидання лічильника користувачів
+
 def base():
     # Кнопка "Повернутися на головну"
     if st.sidebar.button("Повернутися на головну 🏠", on_click=toggle_layout_home):
@@ -30,8 +36,7 @@ def base():
     
 
     # Кнопка "Оновити"
-    if st.sidebar.button("Оновити 🔄"):
-       
+    if st.sidebar.button("Оновити 🔄", on_click=refresh_page):
         pass
 
 
