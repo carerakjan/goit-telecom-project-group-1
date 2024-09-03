@@ -11,7 +11,7 @@ from web.utils.predict_by_model import get_predict
 
 
 def visualize_churn_categories(data):
-    churn_counts = data["churn_category"].value_counts()
+    churn_counts = data["Категорія відтоку"].value_counts()
 
     # Створюємо графік
     fig, ax = plt.subplots(figsize=(6, 4))  # Задайте тут бажані розміри фігури
@@ -48,8 +48,8 @@ def make_predictions(data):
             output = pd.DataFrame()
         predictions = get_predict(data)
         # Додавання результатів передбачень до вихідних даних
-        output["churn_category"] = probability_to_text(predictions)
-        output["churn_probability"] = predictions
+        output["Категорія відтоку"] = probability_to_text(predictions)
+        output["Вірогідність відтоку"] = predictions
 
         print(">>", output)
 

@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from web.utils.business_logic_for_processing_data import make_predictions
+from web.utils.business_logic_for_processing_data import make_predictions, visualize_churn_categories
 
 
 def render_single_tab():
@@ -30,44 +30,52 @@ def render_single_tab():
         # Кнопка для прогнозування
         submit_button = st.form_submit_button(label="Прогнозувати")
 
+    col1, col2 = st.columns([1, 1])
+
     # Обробка результату
-    if submit_button:
-        data = {
-            "is_tv_subscriber": 1 if is_tv_subscriber == "Так" else 0,
-            "is_movie_package_subscriber": (
-                1 if is_movie_package_subscriber == "Так" else 0
-            ),
-            "subscription_age": subscription_age,
-            "reamining_contract": reamining_contract,
-            "download_avg": download_avg,
-            "upload_avg": upload_avg,
-            "download_over_limit": download_over_limit,
-        }
+    with col1:
+        if submit_button:
+            data = {
+                "is_tv_subscriber": 1 if is_tv_subscriber == "Так" else 0,
+                "is_movie_package_subscriber": (
+                    1 if is_movie_package_subscriber == "Так" else 0
+                ),
+                "subscription_age": subscription_age,
+                "reamining_contract": reamining_contract,
+                "download_avg": download_avg,
+                "upload_avg": upload_avg,
+                "download_over_limit": download_over_limit,
+            }
 
-        # Convert user input to DataFrame
-        df = pd.DataFrame([data])
-        predicted_data, missing_columns = make_predictions(df)
+            # Convert user input to DataFrame
+            df = pd.DataFrame([data])
+            predicted_data, missing_columns = make_predictions(df)
+            
+            if predicted_data is not None:
+                st.session_state.user_count += 1      # increase user counter
+                predicted_data["Модель"] = st.session_state.selected_model      # add chosen model to DataFrame
+                predicted_data["Користувач"] = st.session_state.user_count      # add user counter to DataFrame
+                st.session_state.all_data = pd.concat([st.session_state.all_data, predicted_data], ignore_index=True)       # concat DataFrames to final one
+                # Display results
+                st.success("Прогноз додано. Ви можете додати ще одного користувача.")
 
-        if predicted_data is not None:
-            # Save result to session_state
-            st.session_state.predictions.append(predicted_data)
-            st.session_state.user_count += 1
-
-            # Display results
-            st.success("Прогноз додано. Ви можете додати ще одного користувача.")
-
-        else:
-            if missing_columns:
-                missing_columns_str = ", ".join(missing_columns)
-                st.error(
-                    f"Файл не містить всі необхідні колонки для прогнозування. Не вистачає колонок: {missing_columns_str}"
-                )
             else:
-                st.error("Не вдалося провести прогнозування через помилку у даних.")
+                if missing_columns:
+                    missing_columns_str = ", ".join(missing_columns)
+                    st.error(
+                        f"Файл не містить всі необхідні колонки для прогнозування. Не вистачає колонок: {missing_columns_str}"
+                    )
+                else:
+                    st.error("Не вдалося провести прогнозування через помилку у даних.")
 
-    # Відображення результатів всіх попередніх користувачів
-    if st.session_state.predictions:
-        st.subheader("Всі результати прогнозування:")
-        for i, prediction in enumerate(st.session_state.predictions, start=1):
-            st.write(f"Вірогідність відтоку для користувача {i}:")
-            st.dataframe(prediction, hide_index=True)
+        if not st.session_state.all_data.empty:
+            st.subheader("Всі результати прогнозування:")
+
+            st.dataframe(st.session_state.all_data, hide_index=True)       # creating final Dataframe
+
+            visualize_button = st.button(label="Показати розподіл ймовірності відтоку")     # button for visualizing results
+
+            with col2:
+                if visualize_button:        # action for visualize button
+                    st.subheader("Розподіл ймовірності відтоку:")
+                    visualize_churn_categories(st.session_state.all_data.iloc[:, :-1])

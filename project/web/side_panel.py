@@ -19,8 +19,8 @@ def toggle_layout_home():
 
 def refresh_page():
     # Скидання показу результатів і очищення збережених прогнозів
-    st.session_state.predictions = []  # Очищення списку прогнозів
-    st.session_state.user_count = 1  # Скидання лічильника користувачів
+    st.session_state.all_data = pd.DataFrame(columns=["Користувач", "Категорія відтоку", "Вірогідність відтоку", "Модель"])  # Очищення списку прогнозів
+    st.session_state.user_count = 0  # Скидання лічильника користувачів
 
 def base():
 
