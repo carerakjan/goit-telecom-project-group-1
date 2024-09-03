@@ -1,7 +1,10 @@
 import streamlit as st
 import pandas as pd
 
-from web.utils.business_logic_for_processing_data import make_predictions, visualize_churn_categories
+from web.utils.business_logic_for_processing_data import (
+    make_predictions,
+    visualize_churn_categories_bar,
+)
 
 
 def render_single_tab():
@@ -30,7 +33,7 @@ def render_single_tab():
         # Кнопка для прогнозування
         submit_button = st.form_submit_button(label="Прогнозувати")
 
-   
+
 
 
         if submit_button:
@@ -51,14 +54,14 @@ def render_single_tab():
             # Convert user input to DataFrame
             df = pd.DataFrame([data])
             predicted_data, missing_columns = make_predictions(df)
-            
+
             if predicted_data is not None:
                 st.session_state.user_count += 1      # increase user counter
                 predicted_data["Модель"] = st.session_state.selected_model      # add chosen model to DataFrame
-                predicted_data["Користувач"] = st.session_state.user_count  
-                
+                predicted_data["Користувач"] = st.session_state.user_count
+
                 st.session_state.all_data = pd.concat([st.session_state.all_data,  pd.concat([predicted_data, df], axis=1) ], ignore_index=True)       # concat DataFrames to final one
-                st.success("Прогноз додано. Ви можете додати ще одного користувача.") 
+                st.success("Прогноз додано. Ви можете додати ще одного користувача.")
             else:
                 if missing_columns:
                     missing_columns_str = ", ".join(missing_columns)
@@ -73,9 +76,9 @@ def render_single_tab():
 
             st.dataframe(st.session_state.all_data, hide_index=True)
             st.subheader("Розподіл ймовірності відтоку:")
-            visualize_churn_categories(st.session_state.all_data.iloc[:, :-1])       # creating final Dataframe
+            visualize_churn_categories_bar(st.session_state.all_data)       # creating final Dataframe
 
-         
 
-           
-                    
+
+
+

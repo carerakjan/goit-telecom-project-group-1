@@ -5,13 +5,16 @@ import joblib  # Для збереження та завантаження мо�
 import os  # Для роботи з файловою системою
 import pandas as pd  # Для роботи з даними у форматі DataFrame
 from web.utils.function_for_processing import processing_input_data
-from web.utils.scale_data import scale,prepare_data
+from web.utils.scale_data import scale, prepare_data
 from web.utils.load_model import get_model, get_model_name
 from web.utils.predict_by_model import get_predict
+from collections import defaultdict
 
 
 def visualize_churn_categories(data):
     churn_counts = data["Категорія відтоку"].value_counts()
+
+    print("churn_counts:visualize_churn_categories>>>>", churn_counts)
 
     # Створюємо графік
     fig, ax = plt.subplots(figsize=(6, 4))  # Задайте тут бажані розміри фігури
@@ -29,6 +32,46 @@ def visualize_churn_categories(data):
         autotext.set(size=7, weight="bold")
 
     # Відображення графіка безпосередньо у веб-додатку
+    st.pyplot(fig)
+
+
+def visualize_churn_categories_bar(data):
+    data = data.groupby(["Модель", "Категорія відтоку"]).count().reset_index()
+    data = (
+        data.iloc[:, :-1]
+        .pivot(columns=["Модель"], index=["Категорія відтоку"])
+        .fillna(0)
+    )
+    groups = [c[1] for c in data.columns]
+    labels = data.index.to_list()
+    values = data.to_numpy()
+
+    fig, ax = plt.subplots()
+
+    for i in range(values.shape[0]):
+        ax.bar(groups, values[i], label=labels[i], bottom=np.sum(values[:i], axis=0))
+
+    # TODO: calculate percents of each peace of bar
+
+    # total_heights = defaultdict(float)
+    # for bar in ax.patches:
+    #     total_heights[float(bar.get_x())] += float(bar.get_height())
+
+    # bar labels
+    for bar in ax.patches:
+        if bar.get_height():
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                bar.get_height() / 2 + bar.get_y(),
+                # f"{(round(bar.get_height()) / total_heights[bar.get_x()])*100}%",
+                bar.get_height(),
+                ha="center",
+                color="w",
+                weight="bold",
+                size=9,
+            )
+
+    ax.legend()
     st.pyplot(fig)
 
 
@@ -50,7 +93,7 @@ def make_predictions(data):
         # Додавання результатів передбачень до вихідних даних
         output["Категорія відтоку"] = probability_to_text(predictions)
         output["Вірогідність відтоку"] = predictions
-        output["Модель"] = st.session_state.selected_model    
+        output["Модель"] = st.session_state.selected_model
         print(">>", output)
 
         return output, None
@@ -61,4 +104,3 @@ def make_predictions(data):
 def func(pct, allvals):
     absolute = int(pct / 100.0 * sum(allvals))
     return f"{absolute} з {sum(allvals)} ({pct:.1f}%)"
-
