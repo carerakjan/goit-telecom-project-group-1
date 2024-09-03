@@ -23,10 +23,9 @@ def get_predict(data):
     # Перевірка, чи підтримується модель
     if model_name not in supported_models:
         st.write(f"Непідтримувана модель: {model_name}. Використовується модель за замовчуванням: decision_tree.pkl")
-        model_name = "decision_tree.pkl"
-
-    # Завантаження моделі
-    model = get_model(model_name)
-
+        
+        model = get_model("decision_tree.pkl")
+    else:
+        model = get_model(model_name)
     # Повернення ймовірності позитивного класу
     return model.predict_proba(processed_data)[:, 1]
