@@ -21,34 +21,39 @@ def render_multi_tab():
 
             st.subheader("Таблиця користувачів для передбачення")
             st.write(data)
+    else:
+        data=None
 
     # Розміщення кнопок у верхній частині сторінки
     col1, col2 = st.columns([1, 1])  # Задайте співвідношення ширини колонок
 
     with col1:
         if st.button("Зробити передбачення"):
-            predicted_data, missing_columns = make_predictions(data)
-            if predicted_data is not None:
-                st.subheader("Вірогідність відтоку:")
+            if data is not None:
+                predicted_data, missing_columns = make_predictions(data)
+                if predicted_data is not None:
+                    st.subheader("Вірогідність відтоку:")
 
-                column_translation = {
-                    'id': 'ID користувача',
-                    'churn_category': 'Категорія відтоку',
-                    'churn_probability': 'Ймовірність відтоку',
-                }
+                    column_translation = {
+                        'id': 'ID користувача',
+                        'churn_category': 'Категорія відтоку',
+                        'churn_probability': 'Ймовірність відтоку',
+                    }
 
-                
-                translated_data = predicted_data.rename(columns=column_translation)
-                st.dataframe(translated_data, hide_index=True)
+                    
+                    translated_data = predicted_data.rename(columns=column_translation)
+                    st.dataframe(translated_data, hide_index=True)
 
-                with col2:
-                    st.subheader("Розподіл ймовірності відтоку:")
-                    visualize_churn_categories(predicted_data)
-            else:
-                if missing_columns:
-                    missing_columns_str = ", ".join(missing_columns)
-                    st.error(
-                        f"Файл не містить всі необхідні колонки для прогнозування. Не вистачає колонок: {missing_columns_str}"
-                    )
+                    with col2:
+                        st.subheader("Розподіл ймовірності відтоку:")
+                        visualize_churn_categories(predicted_data)
                 else:
-                    st.error("Не вдалося провести прогнозування через помилку у даних.")
+                    if missing_columns:
+                        missing_columns_str = ", ".join(missing_columns)
+                        st.error(
+                            f"Файл не містить всі необхідні колонки для прогнозування. Не вистачає колонок: {missing_columns_str}"
+                        )
+                    else:
+                        st.error("Не вдалося провести прогнозування через помилку у даних.")
+            else:
+                st.error("Завантаже файл з данними зразок Тестовий файл в навігаційній панелі.")

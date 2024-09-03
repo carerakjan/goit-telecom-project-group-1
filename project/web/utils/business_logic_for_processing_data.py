@@ -50,7 +50,7 @@ def make_predictions(data):
         # Додавання результатів передбачень до вихідних даних
         output["Категорія відтоку"] = probability_to_text(predictions)
         output["Вірогідність відтоку"] = predictions
-
+        output["Модель"] = st.session_state.selected_model    
         print(">>", output)
 
         return output, None
