@@ -22,18 +22,17 @@ def render_single_tab():
             "Залишок контракту (в місяцях)", min_value=0.0, value=0.0
         )
         download_avg = st.number_input("Середній об'єм завантаження (Гб)", value=0.0)
-        upload_avg = st.number_input("Середній об'єм відвантаження (Мб/с)", value=0.0)
-        download_over_limit = st.number_input(
-            "Перевищення ліміту завантаження (Гб)", value=0.0
+        upload_avg = st.number_input("Середній об'єм відвантаження (Гб)", value=0.0)
+        download_over_limit = st.selectbox(
+            "Перевищення ліміту завантаження (Гб)", ["Так", "Ні"]
         )
 
         # Кнопка для прогнозування
         submit_button = st.form_submit_button(label="Прогнозувати")
 
-    col1, col2 = st.columns([1, 1])
+   
 
-    # Обробка результату
-    with col1:
+
         if submit_button:
             data = {
                 "is_tv_subscriber": 1 if is_tv_subscriber == "Так" else 0,
@@ -44,7 +43,9 @@ def render_single_tab():
                 "reamining_contract": reamining_contract,
                 "download_avg": download_avg,
                 "upload_avg": upload_avg,
-                "download_over_limit": download_over_limit,
+                "download_over_limit": (
+                    1 if download_over_limit == "Так" else 0
+                ),
             }
 
             # Convert user input to DataFrame
@@ -54,11 +55,10 @@ def render_single_tab():
             if predicted_data is not None:
                 st.session_state.user_count += 1      # increase user counter
                 predicted_data["Модель"] = st.session_state.selected_model      # add chosen model to DataFrame
-                predicted_data["Користувач"] = st.session_state.user_count      # add user counter to DataFrame
-                st.session_state.all_data = pd.concat([st.session_state.all_data, predicted_data], ignore_index=True)       # concat DataFrames to final one
-                # Display results
-                st.success("Прогноз додано. Ви можете додати ще одного користувача.")
-
+                predicted_data["Користувач"] = st.session_state.user_count  
+                
+                st.session_state.all_data = pd.concat([st.session_state.all_data,  pd.concat([predicted_data, df], axis=1) ], ignore_index=True)       # concat DataFrames to final one
+                st.success("Прогноз додано. Ви можете додати ще одного користувача.") 
             else:
                 if missing_columns:
                     missing_columns_str = ", ".join(missing_columns)
@@ -71,11 +71,11 @@ def render_single_tab():
         if not st.session_state.all_data.empty:
             st.subheader("Всі результати прогнозування:")
 
-            st.dataframe(st.session_state.all_data, hide_index=True)       # creating final Dataframe
+            st.dataframe(st.session_state.all_data, hide_index=True)
+            st.subheader("Розподіл ймовірності відтоку:")
+            visualize_churn_categories(st.session_state.all_data.iloc[:, :-1])       # creating final Dataframe
 
-            visualize_button = st.button(label="Показати розподіл ймовірності відтоку")     # button for visualizing results
+         
 
-            with col2:
-                if visualize_button:        # action for visualize button
-                    st.subheader("Розподіл ймовірності відтоку:")
-                    visualize_churn_categories(st.session_state.all_data.iloc[:, :-1])
+           
+                    
