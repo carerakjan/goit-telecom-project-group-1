@@ -57,7 +57,7 @@ def visualize_churn_categories_bar(data):
             model_category_counts.loc[model, category] = data[(data["Модель"] == model) & (data["Категорія відтоку"] == category)].shape[0]
     
     # Створюємо графік
-    fig, ax = plt.subplots(figsize=(14, 8))  # Задайте тут бажані розміри фігури
+    fig, ax = plt.subplots(figsize=(14, 6))  # Зменшено значення висоти графіка
 
     # Кольори для категорій
     colors = {
@@ -66,13 +66,41 @@ def visualize_churn_categories_bar(data):
         "низька": "green"
     }
     
+    # Ширина стовпчиків
+    bar_width = 0.3
+    
     # Побудова стовпчиків
     for i, model in enumerate(all_models):
         counts = model_category_counts.loc[model]
+        total = counts.sum()
+        if total == 0:  # Якщо немає записів для моделі, пропускаємо побудову
+            continue
         bottom = 0
         for category in categories:
-            ax.bar(i, counts[category], bottom=bottom, color=colors[category], label=category if i == 0 else "", edgecolor='black')
-            bottom += counts[category]
+            category_count = counts[category]
+            percentage = (category_count / total) * 100 if total > 0 else 0
+            # Малюємо стовпчики
+            bar = ax.bar(
+                i,
+                category_count,
+                width=bar_width,
+                bottom=bottom,
+                color=colors[category],
+                label=category if i == 0 else "",
+                edgecolor='black'
+            )
+            # Додаємо текст із відсотками
+            if category_count > 0:  # Текст тільки для категорій, де є дані
+                ax.text(
+                    i,
+                    bottom + category_count * 0.5,  # Піднімаємо текст для середини стовпчика
+                    f'{percentage:.1f}%',
+                    ha='center',
+                    va='center',
+                    color='black',
+                    fontsize=9
+                )
+            bottom += category_count
     
     # Налаштування підписів та заголовків
     ax.set_xlabel('Модель')
@@ -89,6 +117,8 @@ def visualize_churn_categories_bar(data):
 
     # Відображення графіка безпосередньо у веб-додатку
     st.pyplot(fig)
+
+
 
 def probability_to_text(probabilities):
     return [
