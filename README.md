@@ -43,35 +43,26 @@ requirements.txt                                       # файли залежн
 README.md                                              # документація проекту
 ```
 
-## Версія Python 3.12
+### Вимоги до версії Python: 3.12
 
-Відкрийте термінал або командний рядок і виконайте наступну команду для створення віртуального середовища. У цьому прикладі ми назвемо наше середовище `venv`:
+Інструкція по запуску додатку:
+* Створення віртуального оточення:<br>
+`python -m venv .venv`
 
-команда `python -m venv .venv`
-
-Наприклад 
-`PS E:\work\repoGIt\goit-telecom-project-group-1> python -m venv .venv`
-
-Активуйте віртуальне середовище:
+* Активація віртуального оточення:<br>
 `.venv\Scripts\activate`
+    * Windows:<br>
+    `.venv\Scripts\activate`
+    * Windows PowerShell:<br>
+    `.\.venv\Scripts\Activate.ps1`
+    * Mac OS:<br>
+    `source .venv/bin/activate`
 
-Наприклад Win OS: 
-`PS E:\work\repoGIt\goit-telecom-project-group-1> .venv\Scripts\activate`
-
-Наприклад Mac OS: 
-`PS E:\work\repoGIt\goit-telecom-project-group-1> source .venv/bin/activate`
-
-Встановіть залежності з `requirements.txt`:
+* Встановлення залежностей:<br>
 `pip install -r requirements.txt`
 
-Наприклад:
-`(.venv) PS E:\work\repoGIt\goit-telecom-project-group-1> pip install -r requirements.txt`
-
-Запустити streamlit 
+* Запуск streamlit:<br>
 `streamlit run project/src/main.py`
-
-Наприклад:
-`(.venv) PS E:\work\repoGIt\goit-telecom-project-group-1> streamlit run project/src/main.py`
 
 
 
