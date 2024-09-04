@@ -33,52 +33,49 @@ def render_single_tab():
         # Кнопка для прогнозування
         submit_button = st.form_submit_button(label="Прогнозувати")
 
+    if submit_button:
+        data = {
+            "is_tv_subscriber": 1 if is_tv_subscriber == "Так" else 0,
+            "is_movie_package_subscriber": (
+                1 if is_movie_package_subscriber == "Так" else 0
+            ),
+            "subscription_age": subscription_age,
+            "reamining_contract": reamining_contract,
+            "download_avg": download_avg,
+            "upload_avg": upload_avg,
+            "download_over_limit": (1 if download_over_limit == "Так" else 0),
+        }
 
+        # Convert user input to DataFrame
+        df = pd.DataFrame([data])
+        predicted_data, missing_columns = make_predictions(df)
 
+        if predicted_data is not None:
+            st.session_state.user_count += 1  # increase user counter
+            predicted_data["Модель"] = (
+                st.session_state.selected_model
+            )  # add chosen model to DataFrame
+            predicted_data["Користувач"] = st.session_state.user_count
 
-        if submit_button:
-            data = {
-                "is_tv_subscriber": 1 if is_tv_subscriber == "Так" else 0,
-                "is_movie_package_subscriber": (
-                    1 if is_movie_package_subscriber == "Так" else 0
-                ),
-                "subscription_age": subscription_age,
-                "reamining_contract": reamining_contract,
-                "download_avg": download_avg,
-                "upload_avg": upload_avg,
-                "download_over_limit": (
-                    1 if download_over_limit == "Так" else 0
-                ),
-            }
-
-            # Convert user input to DataFrame
-            df = pd.DataFrame([data])
-            predicted_data, missing_columns = make_predictions(df)
-
-            if predicted_data is not None:
-                st.session_state.user_count += 1      # increase user counter
-                predicted_data["Модель"] = st.session_state.selected_model      # add chosen model to DataFrame
-                predicted_data["Користувач"] = st.session_state.user_count
-
-                st.session_state.all_data = pd.concat([st.session_state.all_data,  pd.concat([predicted_data, df], axis=1) ], ignore_index=True)       # concat DataFrames to final one
-                st.success("Прогноз додано. Ви можете додати ще одного користувача.")
+            st.session_state.all_data = pd.concat(
+                [st.session_state.all_data, pd.concat([predicted_data, df], axis=1)],
+                ignore_index=True,
+            )  # concat DataFrames to final one
+            st.success("Прогноз додано. Ви можете додати ще одного користувача.")
+        else:
+            if missing_columns:
+                missing_columns_str = ", ".join(missing_columns)
+                st.error(
+                    f"Файл не містить всі необхідні колонки для прогнозування. Не вистачає колонок: {missing_columns_str}"
+                )
             else:
-                if missing_columns:
-                    missing_columns_str = ", ".join(missing_columns)
-                    st.error(
-                        f"Файл не містить всі необхідні колонки для прогнозування. Не вистачає колонок: {missing_columns_str}"
-                    )
-                else:
-                    st.error("Не вдалося провести прогнозування через помилку у даних.")
+                st.error("Не вдалося провести прогнозування через помилку у даних.")
 
     if not st.session_state.all_data.empty:
         st.subheader("Всі результати прогнозування:")
 
         st.dataframe(st.session_state.all_data, hide_index=True)
         st.subheader("Розподіл ймовірності відтоку:")
-        visualize_churn_categories_bar(st.session_state.all_data)       # creating final Dataframe      
-
-
-
-
-
+        visualize_churn_categories_bar(
+            st.session_state.all_data
+        )  # creating final Dataframe

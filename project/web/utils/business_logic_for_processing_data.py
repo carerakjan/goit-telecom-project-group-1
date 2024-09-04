@@ -14,8 +14,6 @@ from collections import defaultdict
 def visualize_churn_categories(data):
     churn_counts = data["Категорія відтоку"].value_counts()
 
-    print("churn_counts:visualize_churn_categories>>>>", churn_counts)
-
     # Створюємо графік
     fig, ax = plt.subplots(figsize=(6, 4))  # Задайте тут бажані розміри фігури
     wedges, texts, autotexts = ax.pie(
@@ -35,89 +33,71 @@ def visualize_churn_categories(data):
     st.pyplot(fig)
 
 
-def visualize_churn_categories_bar(data):
-    # Список всіх моделей
-    all_models = [
+def visualize_churn_categories_bar(df):
+    all_indicies = [
         "decision_tree.pkl",
         "logistic_regression_model.pkl",
         "svm_model_linear.pkl",
+        "svm_model_poly.pkl",
+        "svm_model_rbf.pkl",
         "neural_model_MLP.pkl",
         "svm_model_sigmoid.pkl",
-        "svm_model_poly.pkl",
-        "svm_model_rbf.pkl"
     ]
-    
-    # Створюємо DataFrame з нульовими значеннями для всіх можливих моделей та категорій
-    categories = ["висока", "середня", "низька"]
-    model_category_counts = pd.DataFrame(index=all_models, columns=categories).fillna(0)
-    
-    # Підрахунок кількості записів для кожної категорії відтоку в межах кожної моделі
-    for model in all_models:
-        for category in categories:
-            model_category_counts.loc[model, category] = data[(data["Модель"] == model) & (data["Категорія відтоку"] == category)].shape[0]
-    
-    # Створюємо графік
-    fig, ax = plt.subplots(figsize=(14, 6))  # Зменшено значення висоти графіка
 
-    # Кольори для категорій
-    colors = {
-        "висока": "red",
-        "середня": "yellow",
-        "низька": "green"
-    }
-    
-    # Ширина стовпчиків
-    bar_width = 0.3
-    
-    # Побудова стовпчиків
-    for i, model in enumerate(all_models):
-        counts = model_category_counts.loc[model]
-        total = counts.sum()
-        if total == 0:  # Якщо немає записів для моделі, пропускаємо побудову
-            continue
-        bottom = 0
-        for category in categories:
-            category_count = counts[category]
-            percentage = (category_count / total) * 100 if total > 0 else 0
-            # Малюємо стовпчики
-            bar = ax.bar(
-                i,
-                category_count,
-                width=bar_width,
-                bottom=bottom,
-                color=colors[category],
-                label=category if i == 0 else "",
-                edgecolor='black'
-            )
-            # Додаємо текст із відсотками
-            if category_count > 0:  # Текст тільки для категорій, де є дані
+    df = df.iloc[:, 1:4]
+
+    df = df.groupby(["Модель", "Категорія відтоку"]).count().reset_index()
+
+    df = df.pivot(columns=["Категорія відтоку"], index=["Модель"]).fillna(0)
+
+    df_np = df.reset_index().to_numpy()
+
+    for i in all_indicies:
+        if i not in df.index:
+            zero_count = len(df_np[0][1:])
+            arr1 = np.array([i])
+            arr2 = np.zeros(zero_count).astype(float)
+            df_np = np.append(df_np, [np.concatenate((arr1, arr2))], axis=0)
+
+    df_index = [arr[0] for arr in df_np]
+    df_np = np.array([arr[1:] for arr in df_np]).astype(float)
+
+    df = pd.DataFrame(
+        df_np, columns=df["Вірогідність відтоку"].columns.to_list(), index=df_index
+    )
+
+    # Setup figure
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(7, 4))
+    bottom_acc = None
+
+    # Add bars
+    for i, col in enumerate(df.columns):
+        ax.bar(df.index, df[col], label=col, bottom=bottom_acc)
+        bottom_acc = df[col] if bottom_acc is None else bottom_acc + df[col]
+
+    # Add percentages as labels
+    for idx in df.index:
+        start = 0
+        for col in df.columns:
+            y = df.loc[idx, col]
+            value = df.loc[idx, col]
+            total = df.loc[idx, :].sum()
+            if value:
                 ax.text(
-                    i,
-                    bottom + category_count * 0.5,  # Піднімаємо текст для середини стовпчика
-                    f'{percentage:.1f}%',
-                    ha='center',
-                    va='center',
-                    color='black',
-                    fontsize=9
+                    x=idx,
+                    y=start + y / 2,
+                    s=f"{round(100 * value / total, 1)}%",
+                    fontsize=10,
+                    ha="center",
+                    color="w",
                 )
-            bottom += category_count
-    
-    # Налаштування підписів та заголовків
-    ax.set_xlabel('Модель')
-    ax.set_ylabel('Кількість записів')
-    ax.set_title('Розподіл категорій відтоку для кожної моделі')
-    
-    # Додаємо легенду
-    handles = [plt.Rectangle((0,0),1,1, color=colors[cat]) for cat in categories]
-    ax.legend(handles, categories, title="Категорія відтоку")
-    
-    # Налаштування підписів осі X
-    ax.set_xticks(range(len(all_models)))
-    ax.set_xticklabels(all_models, rotation=45, ha="right")
+            start += y
 
-    # Відображення графіка безпосередньо у веб-додатку
+    # Add other useful informations
+    plt.xticks(rotation=45, ha="right")
+    ax.legend()
+    plt.ylabel("Кількість передбачень")
     st.pyplot(fig)
-
 
 
 def probability_to_text(probabilities):
