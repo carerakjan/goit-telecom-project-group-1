@@ -45,11 +45,8 @@ def visualize_churn_categories_bar(df):
     ]
 
     df = df.iloc[:, 1:4]
-
     df = df.groupby(["Модель", "Категорія відтоку"]).count().reset_index()
-
     df = df.pivot(columns=["Категорія відтоку"], index=["Модель"]).fillna(0)
-
     df_np = df.reset_index().to_numpy()
 
     for i in all_indicies:
@@ -66,16 +63,13 @@ def visualize_churn_categories_bar(df):
         df_np, columns=df["Вірогідність відтоку"].columns.to_list(), index=df_index
     )
 
-    # Setup figure
-    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(7, 4))
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 5))
     bottom_acc = None
 
-    # Add bars
     for i, col in enumerate(df.columns):
         ax.bar(df.index, df[col], label=col, bottom=bottom_acc)
         bottom_acc = df[col] if bottom_acc is None else bottom_acc + df[col]
 
-    # Add percentages as labels
     for idx in df.index:
         start = 0
         for col in df.columns:
@@ -93,10 +87,10 @@ def visualize_churn_categories_bar(df):
                 )
             start += y
 
-    # Add other useful informations
     plt.xticks(rotation=45, ha="right")
-    ax.legend()
+    ax.legend(title="Категорії відтоку")
     plt.ylabel("Кількість передбачень")
+    plt.title("Розподіл категорій відтоку для кожної моделі")
     st.pyplot(fig)
 
 
