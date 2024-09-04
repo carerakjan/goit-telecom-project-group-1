@@ -62,7 +62,7 @@ README.md                                              # документаці�
 `pip install -r requirements.txt`
 
 * Запуск streamlit:<br>
-`streamlit run project/src/main.py`
+`streamlit run project/main.py`
 
 
 
