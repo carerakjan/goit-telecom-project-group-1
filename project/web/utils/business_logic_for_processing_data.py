@@ -36,44 +36,59 @@ def visualize_churn_categories(data):
 
 
 def visualize_churn_categories_bar(data):
-    data = data.groupby(["Модель", "Категорія відтоку"]).count().reset_index()
-    data = (
-        data.iloc[:, :-1]
-        .pivot(columns=["Модель"], index=["Категорія відтоку"])
-        .fillna(0)
-    )
-    groups = [c[1] for c in data.columns]
-    labels = data.index.to_list()
-    values = data.to_numpy()
+    # Список всіх моделей
+    all_models = [
+        "decision_tree.pkl",
+        "logistic_regression_model.pkl",
+        "svm_model_linear.pkl",
+        "neural_model_MLP.pkl",
+        "svm_model_sigmoid.pkl",
+        "svm_model_poly.pkl",
+        "svm_model_rbf.pkl"
+    ]
+    
+    # Створюємо DataFrame з нульовими значеннями для всіх можливих моделей та категорій
+    categories = ["висока", "середня", "низька"]
+    model_category_counts = pd.DataFrame(index=all_models, columns=categories).fillna(0)
+    
+    # Підрахунок кількості записів для кожної категорії відтоку в межах кожної моделі
+    for model in all_models:
+        for category in categories:
+            model_category_counts.loc[model, category] = data[(data["Модель"] == model) & (data["Категорія відтоку"] == category)].shape[0]
+    
+    # Створюємо графік
+    fig, ax = plt.subplots(figsize=(14, 8))  # Задайте тут бажані розміри фігури
 
-    fig, ax = plt.subplots()
+    # Кольори для категорій
+    colors = {
+        "висока": "red",
+        "середня": "yellow",
+        "низька": "green"
+    }
+    
+    # Побудова стовпчиків
+    for i, model in enumerate(all_models):
+        counts = model_category_counts.loc[model]
+        bottom = 0
+        for category in categories:
+            ax.bar(i, counts[category], bottom=bottom, color=colors[category], label=category if i == 0 else "", edgecolor='black')
+            bottom += counts[category]
+    
+    # Налаштування підписів та заголовків
+    ax.set_xlabel('Модель')
+    ax.set_ylabel('Кількість записів')
+    ax.set_title('Розподіл категорій відтоку для кожної моделі')
+    
+    # Додаємо легенду
+    handles = [plt.Rectangle((0,0),1,1, color=colors[cat]) for cat in categories]
+    ax.legend(handles, categories, title="Категорія відтоку")
+    
+    # Налаштування підписів осі X
+    ax.set_xticks(range(len(all_models)))
+    ax.set_xticklabels(all_models, rotation=45, ha="right")
 
-    for i in range(values.shape[0]):
-        ax.bar(groups, values[i], label=labels[i], bottom=np.sum(values[:i], axis=0))
-
-    # TODO: calculate percents of each peace of bar
-
-    # total_heights = defaultdict(float)
-    # for bar in ax.patches:
-    #     total_heights[float(bar.get_x())] += float(bar.get_height())
-
-    # bar labels
-    for bar in ax.patches:
-        if bar.get_height():
-            ax.text(
-                bar.get_x() + bar.get_width() / 2,
-                bar.get_height() / 2 + bar.get_y(),
-                # f"{(round(bar.get_height()) / total_heights[bar.get_x()])*100}%",
-                bar.get_height(),
-                ha="center",
-                color="w",
-                weight="bold",
-                size=9,
-            )
-
-    ax.legend()
+    # Відображення графіка безпосередньо у веб-додатку
     st.pyplot(fig)
-
 
 def probability_to_text(probabilities):
     return [
