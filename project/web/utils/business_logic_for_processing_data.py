@@ -44,31 +44,29 @@ def visualize_churn_categories_bar(data):
         "neural_model_MLP.pkl",
         "svm_model_sigmoid.pkl",
         "svm_model_poly.pkl",
-        "svm_model_rbf.pkl"
+        "svm_model_rbf.pkl",
     ]
-    
+
     # Створюємо DataFrame з нульовими значеннями для всіх можливих моделей та категорій
     categories = ["висока", "середня", "низька"]
     model_category_counts = pd.DataFrame(index=all_models, columns=categories).fillna(0)
-    
+
     # Підрахунок кількості записів для кожної категорії відтоку в межах кожної моделі
     for model in all_models:
         for category in categories:
-            model_category_counts.loc[model, category] = data[(data["Модель"] == model) & (data["Категорія відтоку"] == category)].shape[0]
-    
+            model_category_counts.loc[model, category] = data[
+                (data["Модель"] == model) & (data["Категорія відтоку"] == category)
+            ].shape[0]
+
     # Створюємо графік
-    fig, ax = plt.subplots(figsize=(14, 6))  # Зменшено значення висоти графіка
+    fig, ax = plt.subplots(figsize=(10, 5))  # Зменшено значення висоти графіка
 
     # Кольори для категорій
-    colors = {
-        "висока": "red",
-        "середня": "yellow",
-        "низька": "green"
-    }
-    
+    colors = {"висока": "red", "середня": "yellow", "низька": "green"}
+
     # Ширина стовпчиків
-    bar_width = 0.3
-    
+    bar_width = 0.6
+
     # Побудова стовпчиків
     for i, model in enumerate(all_models):
         counts = model_category_counts.loc[model]
@@ -87,37 +85,37 @@ def visualize_churn_categories_bar(data):
                 bottom=bottom,
                 color=colors[category],
                 label=category if i == 0 else "",
-                edgecolor='black'
+                # edgecolor="black",
             )
             # Додаємо текст із відсотками
             if category_count > 0:  # Текст тільки для категорій, де є дані
                 ax.text(
                     i,
-                    bottom + category_count * 0.5,  # Піднімаємо текст для середини стовпчика
-                    f'{percentage:.1f}%',
-                    ha='center',
-                    va='center',
-                    color='black',
-                    fontsize=9
+                    bottom
+                    + category_count * 0.5,  # Піднімаємо текст для середини стовпчика
+                    f"{percentage:.1f}%",
+                    ha="center",
+                    va="center",
+                    color="w",
+                    fontsize=9,
                 )
             bottom += category_count
-    
+
     # Налаштування підписів та заголовків
-    ax.set_xlabel('Модель')
-    ax.set_ylabel('Кількість записів')
-    ax.set_title('Розподіл категорій відтоку для кожної моделі')
-    
+    ax.set_xlabel("Модель")
+    ax.set_ylabel("Кількість записів")
+    ax.set_title("Розподіл категорій відтоку для кожної моделі")
+
     # Додаємо легенду
-    handles = [plt.Rectangle((0,0),1,1, color=colors[cat]) for cat in categories]
+    handles = [plt.Rectangle((0, 0), 1, 1, color=colors[cat]) for cat in categories]
     ax.legend(handles, categories, title="Категорія відтоку")
-    
+
     # Налаштування підписів осі X
     ax.set_xticks(range(len(all_models)))
     ax.set_xticklabels(all_models, rotation=45, ha="right")
 
     # Відображення графіка безпосередньо у веб-додатку
     st.pyplot(fig)
-
 
 
 def probability_to_text(probabilities):
