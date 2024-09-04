@@ -3,7 +3,7 @@ import pandas as pd
 
 @st.dialog("Instruction", width="large")         
 def inst():
-    with open('project/web/resources/docs/instructions_for_the_User.txt', 'r', encoding='utf-8') as file:
+    with open('project/web/resources/docs/instructions_for_the_user.txt', 'r', encoding='utf-8') as file:
       instructions = file.read()
       st.write(instructions)
 

@@ -21,7 +21,7 @@ project/
 ├── web
 │   ├── resources                                      # ресурси
 │       ├── docs                                       # документи
-│           └── Instructions_for_the_User.txt          # інструкція користувача
+│           └── Instructions_for_the_user.txt          # інструкція користувача
 │       └── images                                     # зображення
 │           └── logo.png                               # зображення лого
 │   ├── tab                                            # кнопки
