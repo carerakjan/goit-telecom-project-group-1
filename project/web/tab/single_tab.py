@@ -27,7 +27,7 @@ def render_single_tab():
         download_avg = st.number_input("Середній об'єм завантаження (Гб)", value=0.0)
         upload_avg = st.number_input("Середній об'єм відвантаження (Гб)", value=0.0)
         download_over_limit = st.selectbox(
-            "Перевищення ліміту завантаження (Гб)", ["Так", "Ні"]
+            "Перевищення ліміту завантаження (Гб)", ["Ні","Так"]
         )
 
         # Кнопка для прогнозування
