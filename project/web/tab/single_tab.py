@@ -71,12 +71,12 @@ def render_single_tab():
                 else:
                     st.error("Не вдалося провести прогнозування через помилку у даних.")
 
-        if not st.session_state.all_data.empty:
-            st.subheader("Всі результати прогнозування:")
+    if not st.session_state.all_data.empty:
+        st.subheader("Всі результати прогнозування:")
 
-            st.dataframe(st.session_state.all_data, hide_index=True)
-            st.subheader("Розподіл ймовірності відтоку:")
-            visualize_churn_categories_bar(st.session_state.all_data)       # creating final Dataframe
+        st.dataframe(st.session_state.all_data, hide_index=True)
+        st.subheader("Розподіл ймовірності відтоку:")
+        visualize_churn_categories_bar(st.session_state.all_data)       # creating final Dataframe      
 
 
 
