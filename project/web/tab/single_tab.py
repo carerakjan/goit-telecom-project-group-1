@@ -13,21 +13,21 @@ def render_single_tab():
     with st.form(key="single_prediction_form"):
         # Введення даних користувача
         is_tv_subscriber = st.selectbox(
-            "Чи є підписником телевізійного пакету?", ["Так", "Ні"]
+            "Чи є підписником телевізійного пакету?", ["Так", "Ні"], key="tv_subscriber"
         )
         is_movie_package_subscriber = st.selectbox(
-            "Чи є підписником пакету фільмів?", ["Так", "Ні"]
+            "Чи є підписником пакету фільмів?", ["Так", "Ні"], key="movie_subscriber"
         )
         subscription_age = st.number_input(
-            "Вік підписки (в місяцях)", min_value=0.0, value=0.0
+            "Вік підписки (в місяцях)", min_value=0.0, max_value=1000.0, value=0.0
         )
         reamining_contract = st.number_input(
-            "Залишок контракту (в місяцях)", min_value=0.0, value=0.0
+            "Залишок контракту (в місяцях)", min_value=0.0, max_value=1000.0, value=0.0
         )
-        download_avg = st.number_input("Середній об'єм завантаження (Гб)", value=0.0)
-        upload_avg = st.number_input("Середній об'єм відвантаження (Гб)", value=0.0)
+        download_avg = st.number_input("Середній об'єм завантаження (Гб)", min_value=0.0, max_value=10000.0, value=0.0)
+        upload_avg = st.number_input("Середній об'єм відвантаження (Гб)", min_value=0.0, max_value=10000.0, value=0.0)
         download_over_limit = st.selectbox(
-            "Перевищення ліміту завантаження (Гб)", ["Ні","Так"]
+            "Перевищення ліміту завантаження (Гб)", ["Ні","Так"], key="over_limit"
         )
 
         # Кнопка для прогнозування
