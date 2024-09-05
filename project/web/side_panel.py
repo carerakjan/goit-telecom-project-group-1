@@ -1,20 +1,15 @@
 import streamlit as st
 import pandas as pd
-
-@st.dialog("Instruction", width="large")         
-def inst():
-    with open('project/web/resources/docs/instructions_for_the_user.txt', 'r', encoding='utf-8') as file:
-      instructions = file.read()
-      st.write(instructions)
+from web.instruction_dialog import show_instruction_dialog
 
 
-@st.dialog("Зразок файлу", width="large")         
+@st.dialog("Зразок файлу", width="large")
 def example():
     showcsv = pd.read_csv("project/data/users.csv")
     st.header("Перевірте відповідність колонок та даних для свого файлу")
     st.write(showcsv)
 
-@st.dialog("Обмеження вводу показників для передбачення",width="large")  
+@st.dialog("Обмеження вводу показників для передбачення",width="large")
 def max_value_list():
     st.header("Лист мінімальних та максимальних значеннь для передбачення")
 
@@ -39,7 +34,7 @@ def max_value_list():
             "906 Гб",
             "14 Гб"
         ]
-        
+
     }
 
     df = pd.DataFrame(data)
@@ -50,33 +45,39 @@ def max_value_list():
 def toggle_layout_home():
     st.session_state.hide_layout = not st.session_state.hide_layout
 
+
 def refresh_page():
     # Скидання показу результатів і очищення збережених прогнозів
-    st.session_state.all_data = pd.DataFrame(columns=["Користувач", "Категорія відтоку", "Вірогідність відтоку", "Модель"])  # Очищення списку прогнозів
+    st.session_state.all_data = pd.DataFrame(
+        columns=["Користувач", "Категорія відтоку", "Вірогідність відтоку", "Модель"]
+    )  # Очищення списку прогнозів
     st.session_state.user_count = 0  # Скидання лічильника користувачів
+
 
 def base():
 
-    st.sidebar.image("project/web/resources/images/logo.png", use_column_width=False, width=100)
+    st.sidebar.image(
+        "project/web/resources/images/logo.png", use_column_width=False, width=100
+    )
 
-    st.sidebar.markdown("Цей додаток дозволяє аналізувати клієнтські дані та визначати ймовірність припинення використання послуги.")
+    st.sidebar.markdown(
+        "Цей додаток дозволяє аналізувати клієнтські дані та визначати ймовірність припинення використання послуги."
+    )
 
     # Кнопка "Повернутися на головну"
     if st.sidebar.button("Повернутися на головну 🏠", on_click=toggle_layout_home):
         pass
     # Кнопка "Повернутися на головну"
     if st.sidebar.button("Інструкція користування 📄"):
-        inst()
+        show_instruction_dialog()
     # Кнопка "Зразок файлу"
     if st.sidebar.button("Тестовий файл 📄"):
         example()
-    
+
     if st.sidebar.button("Вимоги показників вводу 📋"):
         max_value_list()
-    
+
 
     # Кнопка "Оновити"
     if st.sidebar.button("Оновити 🔄", on_click=refresh_page):
         pass
-
-

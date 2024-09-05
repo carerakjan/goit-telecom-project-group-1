@@ -62,7 +62,7 @@ def visualize_churn_categories_bar(data):
     fig, ax = plt.subplots(figsize=(10, 5))  # Зменшено значення висоти графіка
 
     # Кольори для категорій
-    colors = {"висока": "red", "середня": "yellow", "низька": "green"}
+    colors = {"висока": "red", "середня": "orange", "низька": "green"}
 
     # Ширина стовпчиків
     bar_width = 0.6
@@ -120,7 +120,7 @@ def visualize_churn_categories_bar(data):
 
 def probability_to_text(probabilities):
     return [
-        "висока" if p >= 0.75 else "середня" if 0.5 <= p < 0.75 else "низька"
+        "висока" if p > 0.66 else "середня" if 0.34 <= p <= 0.66 else "низька"
         for p in probabilities
     ]
 
