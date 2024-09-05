@@ -75,8 +75,6 @@ def base():
         example()
     
     if st.sidebar.button("Вимоги показників введення 📋"):
-
-    if st.sidebar.button("Вимоги показників вводу 📋"):
         max_value_list()
 
 
