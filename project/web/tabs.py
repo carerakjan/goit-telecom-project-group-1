@@ -6,7 +6,7 @@ from web.models_bar import render_model_bar
 
 def render_tabs():
     # Створення вкладок
-    tab1, tab2 = st.tabs(["Одиночне прогнозування", "Передбачення для списку юзерів"])
+    tab1, tab2 = st.tabs(["Одиночне прогнозування", "Передбачення для списку користувачів"])
 
     # Вміст вкладок
     with tab1:
@@ -15,6 +15,6 @@ def render_tabs():
         render_single_tab()
 
     with tab2:
-        st.header("Передбачення для списку юзерів")
+        st.header("Передбачення для списку користувачів")
         render_model_bar(["selectbox2", "button2"])
         render_multi_tab()

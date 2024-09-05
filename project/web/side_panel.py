@@ -73,6 +73,8 @@ def base():
     # Кнопка "Зразок файлу"
     if st.sidebar.button("Тестовий файл 📄"):
         example()
+    
+    if st.sidebar.button("Вимоги показників введення 📋"):
 
     if st.sidebar.button("Вимоги показників вводу 📋"):
         max_value_list()
