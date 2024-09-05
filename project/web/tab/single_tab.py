@@ -26,9 +26,8 @@ def render_single_tab():
         )
         download_avg = st.number_input("Середній об'єм завантаження (Гб)", min_value=0.0, max_value=10000.0, value=0.0)
         upload_avg = st.number_input("Середній об'єм відвантаження (Гб)", min_value=0.0, max_value=10000.0, value=0.0)
-        download_over_limit = st.selectbox(
-            "Перевищення ліміту завантаження (Гб)", ["Ні","Так"], key="over_limit"
-        )
+        download_over_limit = st.number_input("Перевищення ліміту завантаження (Гб)", min_value=0, max_value=100, value=0)
+        
 
         # Кнопка для прогнозування
         submit_button = st.form_submit_button(label="Прогнозувати")
@@ -46,9 +45,7 @@ def render_single_tab():
                 "reamining_contract": reamining_contract,
                 "download_avg": download_avg,
                 "upload_avg": upload_avg,
-                "download_over_limit": (
-                    1 if download_over_limit == "Так" else 0
-                ),
+                "download_over_limit": download_over_limit,
             }
 
             # Convert user input to DataFrame
