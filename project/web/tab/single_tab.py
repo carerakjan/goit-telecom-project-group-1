@@ -19,21 +19,18 @@ def render_single_tab():
             "Чи є підписником пакету фільмів?", ["Так", "Ні"], key="movie_subscriber"
         )
         subscription_age = st.number_input(
-            "Вік підписки (в місяцях)", min_value=0.0, max_value=1000.0, value=0.0
+            "Вік підписки (в місяцях)", min_value=0.0, max_value=12.0, value=0.0
         )
         reamining_contract = st.number_input(
-            "Залишок контракту (в місяцях)", min_value=0.0, max_value=1000.0, value=0.0
+            "Залишок контракту (в місяцях)", min_value=0.0, max_value=12.0, value=0.0
         )
-        download_avg = st.number_input("Середній об'єм завантаження (Гб)", min_value=0.0, max_value=10000.0, value=0.0)
-        upload_avg = st.number_input("Середній об'єм відвантаження (Гб)", min_value=0.0, max_value=10000.0, value=0.0)
-        download_over_limit = st.number_input("Перевищення ліміту завантаження (Гб)", min_value=0, max_value=100, value=0)
+        download_avg = st.number_input("Середній об'єм завантаження (Гб)", min_value=0.0, max_value=8830.0, value=0.0)
+        upload_avg = st.number_input("Середній об'єм відвантаження (Гб)", min_value=0.0, max_value=906.0, value=0.0)
+        download_over_limit = st.number_input("Перевищення ліміту завантаження (Гб)", min_value=0, max_value=14, value=0)
         
 
         # Кнопка для прогнозування
         submit_button = st.form_submit_button(label="Прогнозувати")
-
-
-
 
         if submit_button:
             data = {
