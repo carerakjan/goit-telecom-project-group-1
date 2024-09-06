@@ -7,7 +7,7 @@ from web.utils.business_logic_for_processing_data import (
 
 
 def render_multi_tab():
-    # st.header("Прогнозування для списку юзерів")
+    # st.header("Прогнозування для списку користувачів")
 
     uploaded_file = st.file_uploader(
         "Завантажте файл зі списком користувачів для прогнозування (формат CSV)",
