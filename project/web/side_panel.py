@@ -7,7 +7,7 @@ from web.instruction_dialog import show_instruction_dialog
 def example():
     showcsv = pd.read_csv("project/data/users.csv")
     st.header("Перевірте відповідність колонок та даних для свого файлу")
-    st.write(showcsv)
+    st.dataframe(showcsv, hide_index=True)
 
 @st.dialog("Обмеження введення показників для прогнозування",width="large")
 def max_value_list():
