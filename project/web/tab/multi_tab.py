@@ -7,7 +7,7 @@ from web.utils.business_logic_for_processing_data import (
 
 
 def render_multi_tab():
-    # st.header("Передбачення для списку юзерів")
+    # st.header("Прогнозування для списку юзерів")
 
     uploaded_file = st.file_uploader(
         "Завантажте файл зі списком користувачів для прогнозування (формат CSV)",
@@ -19,7 +19,7 @@ def render_multi_tab():
         if data is not None:
             st.success("Файл успішно завантажено!")
 
-            st.subheader("Таблиця користувачів для передбачення")
+            st.subheader("Таблиця користувачів для прогнозування")
             st.write(data)
     else:
         data=None
@@ -28,7 +28,7 @@ def render_multi_tab():
     col1, col2 = st.columns([1, 1])  # Задайте співвідношення ширини колонок
 
     with col1:
-        if st.button("Зробити передбачення"):
+        if st.button("Зробити прогнозування"):
             if data is not None:
                 predicted_data, missing_columns = make_predictions(data)
                 if predicted_data is not None:

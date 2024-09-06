@@ -133,7 +133,7 @@ def make_predictions(data):
         else:
             output = pd.DataFrame()
         predictions = get_predict(data)
-        # Додавання результатів передбачень до вихідних даних
+        # Додавання результатів прогнозування до вихідних даних
         output["Категорія відтоку"] = probability_to_text(predictions)
         output["Вірогідність відтоку"] = predictions
         output["Модель"] = st.session_state.selected_model
